@@ -23,6 +23,8 @@ Route::get('/buku', [BukuController::class, 'index'])->name('buku');
 Route::get('/create', [BukuController::class, 'create'])->name('create');
 Route::post('/store', [BukuController::class, 'store'])->name('store');
 Route::get('/detail/{id}/detail-data-buku', [BukuController::class, 'show'])->name('detailbuku');
+// delete
+Route::delete('/delete/{id}/hapus-data-buku', [BukuController::class, 'destroy'])->name('deletebuku');
 
 // edit
 Route::get('/edit/{id}/edit-data-buku', [BukuController::class, 'edit'])->name('editbuku');

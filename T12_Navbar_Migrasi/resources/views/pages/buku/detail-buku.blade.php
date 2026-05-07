@@ -1,15 +1,58 @@
-@section('title', 'Dashboard')
+@section('title', 'Detail Buku')
+
 @extends('layout.master')
+
 @section('content')
 
-    <div class="container mt-3">
-        <h1>Form</h1>
-        <div class="card-header">Detail Data Buku</div>
-        <div class="card-body">
-           <p>Judu Buku : {{ $detailBuku->judul }}</p>
-           <p>Penulis : {{ $detailBuku->penulis }}</p>
-           <p>Tahun Terbit : {{ $detailBuku->tahunterbit }}</p>
-           <p>Harga : {{ $detailBuku->harga }}</p>
+    <div class="container mt-4">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Detail Data Buku</h4>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered">
+
+                    <tr>
+                        <th width="25%">Judul Buku</th>
+                        <td>{{ $detailBuku->judul }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Penulis</th>
+                        <td>{{ $detailBuku->penulis }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Tahun Terbit</th>
+                        <td>{{ $detailBuku->tahunterbit }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Harga</th>
+                        <td>Rp {{ number_format($detailBuku->harga, 0, ',', '.') }}</td>
+                    </tr>
+
+                </table>
+
+                <div class="mt-3">
+                    <a href="{{ route('buku') }}" class="btn btn-secondary">
+                        Kembali
+                    </a>
+
+                    <a href="{{ route('editbuku', ['id' => $detailBuku->id]) }}"
+                        class="btn btn-warning">
+                        Edit
+                    </a>
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
 @endsection

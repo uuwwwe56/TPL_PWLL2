@@ -53,6 +53,7 @@ class BukuController extends Controller
                 'penulis.min' => 'isi  nama lengkap',
             ]
         );
+        
         $validated['kode_buku'] = 1;
 
         Buku::create($validated);
@@ -71,17 +72,18 @@ class BukuController extends Controller
 
         // orm
         $detailBuku = Buku::findOrFail($id);
+        return view('pages.buku.detail-buku',compact('detailBuku'));
         // dd($detailBuku);
-        }
-        
-        /**
-         * Show the form for editing the specified resource.
-        */
-        public function edit(string $id)
-        {
-            
-            $detailBuku = Buku::findOrFail($id);
-            return view('pages.buku.create', compact('detailBuku'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+
+        $detailBuku = Buku::findOrFail($id);
+        return view('pages.buku.create', compact('detailBuku'));
     }
 
     /**
@@ -105,15 +107,21 @@ class BukuController extends Controller
             ]
         );
 
-        Buku::where('id',$id)->update($validated);
-        return redirect()->route('buku')->with('success', 'Data buku  berhasil diubah');   
+        Buku::where('id', $id)->update($validated);
+        return redirect()->route('buku')->with('success', 'Data buku  berhasil diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
-        //
+        Buku::destroy($id);
+
+        return redirect()->route('buku')
+            ->with('success', 'Data buku berhasil dihapus');
     }
 }
