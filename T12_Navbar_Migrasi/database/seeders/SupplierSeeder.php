@@ -16,7 +16,7 @@ class SupplierSeeder extends Seeder
 
         $data=[];
         for($i=0; $i<10; $i++){
-            $data[]=[]
+            $data[]=[];
         }
 
     }

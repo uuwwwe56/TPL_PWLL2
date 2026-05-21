@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+class Dosen extends Model
+{
+    use HasFactory;
+    protected $table = 'dosen';
+    protected $primaryKey = 'nidn';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $fillable = [
+        'nidn',
+        'nama'
+    ];
+
+    public function mahasiswa()
+    {
+        return $this->hasMany(Mahasiswa::class, 'nidn');
+    }
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class, 'nidn', 'nidn');
+    }
+}
