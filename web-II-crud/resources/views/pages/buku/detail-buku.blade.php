@@ -10,7 +10,7 @@
                 <p>Penulis: {{ $detailBuku->penulis }}</p>
                 <p>Tahun Terbit: {{ $detailBuku->tahun_terbit }}</p>
                 <p>Harga: {{ $detailBuku->harga }}</p>
-                <p>Kategori: </p>
+                <p>Kategori: {{ $detailBuku->kategori->nama_kategori ?? '-' }}</p>
             </div>
         </div>
     </div>

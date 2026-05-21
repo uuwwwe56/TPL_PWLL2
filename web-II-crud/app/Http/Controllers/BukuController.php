@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Buku;
+use App\Models\Kategori;
+use App\Models\DetailBuku;
 
 class BukuController extends Controller
 {
@@ -43,7 +45,9 @@ class BukuController extends Controller
      */
     public function create()
     {
-        return view('pages.buku.form-create');
+        $kategori = Kategori::all();
+
+        return view('pages.buku.form-create', compact('kategori'));
     }
 
     /**
@@ -51,27 +55,36 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->judul);
+        $validated = $request->validate([
+            'judul' => 'required|min:5',
+            'penulis' => 'required|min:5',
+            'harga' => 'required|numeric',
+            'tahun_terbit' => 'required|numeric',
+            'kategori_id' => 'required',
+            'isbn' => 'required',
+            'jumlah_halaman' => 'required|numeric'
+        ]);
 
-        $validated = $request->validate(
+        // simpan buku
+        $buku = Buku::create([
+            'judul' => $validated['judul'],
+            'penulis' => $validated['penulis'],
+            'harga' => $validated['harga'],
+            'tahun_terbit' => $validated['tahun_terbit'],
+            'kategori_id' => $validated['kategori_id'],
+        ]);
+
+        // simpan detail buku
+        DetailBuku::updateOrCreate(
+            ['buku_id' => $buku->id],
             [
-                'judul' => 'required|min:5',
-                'penulis' => 'required|min:5',
-                'harga' => 'required|numeric',
-                'tahun_terbit' => 'required|numeric',             
-            ],
-            [
-                'judul.required'=>'waduh judul bukunya jangan dikosongkan ya!',
-                'judul.min'=>'judulnya terlalu pendek, minimal 3 karakter',
-                'penulis.required'=>'setiap buku harus ada nama penulisnya!'
+                'isbn' => $validated['isbn'],
+                'jumlah_halaman' => $validated['jumlah_halaman']
             ]
         );
-        $validated['kategori_id'] = 1;
 
-        Buku::create($validated);
-
-        return redirect()->route('buku')->with('success', 'Buku baru berhasil ditambahkan');
-
+        return redirect()->route('buku')
+            ->with('success', 'Buku berhasil ditambahkan');
     }
 
     /**
@@ -84,10 +97,9 @@ class BukuController extends Controller
 
         //orm
         // $detailBuku = Buku::find($id);
-        $detailBuku = Buku::findOrFail($id);        
+        $detailBuku = Buku::findOrFail($id);
 
         return view('pages.buku.detail-buku', compact('detailBuku'));
-
     }
 
     /**
@@ -95,8 +107,11 @@ class BukuController extends Controller
      */
     public function edit(string $id)
     {
-        $detailBuku = Buku::findOrFail($id);        
-        return view('pages.buku.form-create', compact('detailBuku'));
+        $detailBuku = Buku::with('detail')->findOrFail($id);
+
+        $kategori = Kategori::all();
+
+        return view('pages.buku.form-create', compact('detailBuku', 'kategori'));
     }
 
     /**
@@ -104,21 +119,39 @@ class BukuController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validated = $request->validate(
+        $validated = $request->validate([
+            'judul' => 'required|min:5',
+            'penulis' => 'required|min:5',
+            'harga' => 'required|numeric',
+            'tahun_terbit' => 'required|numeric',
+            'kategori_id' => 'required',
+            'isbn' => 'required',
+            'jumlah_halaman' => 'required|numeric'
+        ]);
+
+        $buku = Buku::findOrFail($id);
+
+        // update tabel buku
+        $buku->update([
+            'judul' => $validated['judul'],
+            'penulis' => $validated['penulis'],
+            'harga' => $validated['harga'],
+            'tahun_terbit' => $validated['tahun_terbit'],
+            'kategori_id' => $validated['kategori_id'],
+        ]);
+
+        // update tabel detail_buku
+        DetailBuku::updateOrCreate(
+            ['buku_id' => $buku->id],
             [
-                'judul' => 'required|min:5',
-                'penulis' => 'required|min:5',
-                'harga' => 'required|numeric',
-                'tahun_terbit' => 'required|numeric',             
-            ],
-            [
-                'judul.required'=>'waduh judul bukunya jangan dikosongkan ya!',
-                'judul.min'=>'judulnya terlalu pendek, minimal 3 karakter',
-                'penulis.required'=>'setiap buku harus ada nama penulisnya!'
+                'isbn' => $validated['isbn'],
+                'jumlah_halaman' => $validated['jumlah_halaman']
             ]
         );
-        Buku::where('id', $id)->update($validated);
-        return redirect()->route('buku')->with('success', 'Data buku berhasil dirubah!');
+
+        return redirect()
+            ->route('buku')
+            ->with('success', 'Data buku berhasil diupdate!');
     }
 
     /**
@@ -126,9 +159,18 @@ class BukuController extends Controller
      */
     public function destroy(string $id)
     {
-        $detailBuku = Buku::findOrFail($id);        
+        $detailBuku = Buku::findOrFail($id);
+
+        // hapus detail buku
+        if ($detailBuku->detail) {
+            $detailBuku->detail->delete();
+        }
+
+        // hapus buku
         $detailBuku->delete();
-        return redirect()->route('buku')->with('success', 'Data buku berhasil dihapus!');
-        
+
+        return redirect()
+            ->route('buku')
+            ->with('success', 'Data buku berhasil dihapus!');
     }
 }

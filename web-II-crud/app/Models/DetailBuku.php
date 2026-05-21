@@ -12,7 +12,7 @@ class DetailBuku extends Model
     //inisialisasi PK
     protected $primaryKey = 'id';
 
-
+    protected $guarded = ['id'];
     public function buku()
     {
         return $this->belongsTo(Buku::class, 'buku_id', 'id');

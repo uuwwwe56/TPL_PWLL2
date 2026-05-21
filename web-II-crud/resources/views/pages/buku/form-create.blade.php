@@ -50,7 +50,52 @@
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">ISBN</label>
 
+                        <input type="text" class="form-control" name="isbn"
+                            value="{{ old('isbn', $detailBuku->detail->isbn ?? '') }}">
+
+                        @error('isbn')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+
+                        <select name="kategori_id" class="form-select">
+
+                            <option value="">-- Pilih Kategori --</option>
+
+                            @foreach ($kategori as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ old('kategori_id', $detailBuku->kategori_id ?? '') == $item->id ? 'selected' : '' }}>
+
+                                    {{ $item->nama_kategori }}
+
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                        @error('kategori_id')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah Halaman</label>
+
+                        <input type="number" class="form-control" name="jumlah_halaman"
+                            value="{{ old('jumlah_halaman', $detailBuku->detail->jumlah_halaman ?? '') }}">
+
+                        @error('jumlah_halaman')
+                            <div class="form-text text-danger">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
             </div>

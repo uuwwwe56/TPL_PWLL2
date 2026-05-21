@@ -31,6 +31,7 @@
                         <th scope="col">Tahun Terbit</th>
                         <th scope="col">Harga</th>
                         <th scope="col">ISBN</th>
+                        <th scope="col">Jumlah Halaman</th>
                         <th scope="col">Kategori</th>
                         <th scope="col" width="25%">Aksi</th>
                     </tr>
@@ -53,6 +54,8 @@
 
                             <td>{{ $item->detail->isbn ?? '-' }}</td>
 
+                            <td>{{ $item->detail->jumlah_halaman ?? '-' }}</td>
+
                             <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
 
                             <td class="text-center">
@@ -73,6 +76,48 @@
                             </td>
 
                         </tr>
+                        <!-- Modal Hapus -->
+                        <div class="modal fade" id="hapus{{ $item->id }}" tabindex="-1"
+                            aria-labelledby="hapusLabel{{ $item->id }}" aria-hidden="true">
+
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="hapusLabel{{ $item->id }}">
+                                            Konfirmasi Hapus
+                                        </h1>
+
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        Yakin ingin menghapus buku
+                                        <strong>{{ $item->judul }}</strong> ?
+                                    </div>
+
+                                    <div class="modal-footer">
+
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Batal
+                                        </button>
+
+                                        <form action="{{ route('delete-buku', ['id' => $item->id]) }}" method="POST">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="btn btn-danger">
+                                                Hapus
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @empty
 
                         <tr>
